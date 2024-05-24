@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"video-uploader/src/gcp"
+	"video-uploader/src/utils"
 
 	"github.com/joho/godotenv"
 )
@@ -28,4 +29,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	utils.CreateChunks("./temp/" + objectName)
+
+	defer utils.DeleteTempDir()
 }
