@@ -125,3 +125,11 @@ func createChunksGo(filePath string) error {
 
 	return nil
 }
+
+func GetFileSize(filePath string) int64 {
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return fileInfo.Size()
+}

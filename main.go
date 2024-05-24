@@ -7,6 +7,7 @@ import (
 	"os"
 	"video-uploader/src/gcp"
 	"video-uploader/src/utils"
+	"video-uploader/src/vimeo_api"
 
 	"github.com/joho/godotenv"
 )
@@ -25,12 +26,18 @@ func main() {
 	objNames := gcp.ListObjects(ctx, bkt)
 	fmt.Printf("All object names found: %s\n", objNames)
 
-	err = gcp.DownloadObject(ctx, bkt, objectName)
+	filePath, err := gcp.DownloadObject(ctx, bkt, objectName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	utils.CreateChunks("./temp/" + objectName)
+	utils.CreateChunks(filePath)
 
 	defer utils.DeleteTempDir()
+
+	resp, err := vimeo_api.CreateVideo(filePath)
+	if err != nil {
+		log.Fatal("Error while creating the video: %w", err)
+	}
+	fmt.Println(resp)
 }
