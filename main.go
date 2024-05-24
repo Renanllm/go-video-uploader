@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"video-uploader/src/gcp"
+	"video-uploader/src/cloud_storage"
 	"video-uploader/src/utils"
 	"video-uploader/src/vimeo_api"
 
@@ -21,12 +21,12 @@ func main() {
 
 	bktName := os.Getenv("BUCKET_NAME")
 	objectName := os.Getenv("OBJECT_NAME")
-	bkt := gcp.GetBucket(ctx, bktName)
+	bkt := cloud_storage.GetBucket(ctx, bktName)
 
-	objNames := gcp.ListObjects(ctx, bkt)
+	objNames := cloud_storage.ListObjects(ctx, bkt)
 	fmt.Printf("All object names found: %s\n", objNames)
 
-	filePath, err := gcp.DownloadObject(ctx, bkt, objectName)
+	filePath, err := cloud_storage.DownloadObject(ctx, bkt, objectName)
 	if err != nil {
 		log.Fatal(err)
 	}
