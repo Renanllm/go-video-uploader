@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+
 	"os"
 	"video-uploader/src/cloud_storage"
 	"video-uploader/src/utils"
@@ -35,9 +36,8 @@ func main() {
 
 	defer utils.DeleteTempDir()
 
-	resp, err := vimeo_api.CreateVideo(filePath)
+	_, err = vimeo_api.CreateVideo(filePath)
 	if err != nil {
-		log.Fatal("Error while creating the video: %w", err)
+		log.Fatal(err)
 	}
-	fmt.Println(resp)
 }

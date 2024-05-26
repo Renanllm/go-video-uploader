@@ -12,7 +12,8 @@ import (
 )
 
 type CreateVideoRequest struct {
-	Upload UploadRequest
+	Upload UploadRequest `json:"upload"`
+	Name   string        `json:"name"`
 }
 
 type UploadRequest struct {
@@ -32,20 +33,21 @@ type UploadResponse struct {
 
 func CreateVideo(filePath string) (*CreateVideoResponse, error) {
 	url := "https://api.vimeo.com/me/videos"
+	fileInfo := utils.GetFileInfo(filePath)
 	payload := CreateVideoRequest{
 		Upload: UploadRequest{
 			Approach: "tus",
-			Size:     strconv.FormatInt(utils.GetFileSize(filePath), 10),
+			Size:     strconv.FormatInt(fileInfo.Size(), 10),
 		},
+		Name: fileInfo.Name(),
 	}
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing to JSON: %w", err)
+		return nil, fmt.Errorf("error while parsing to JSON: %w", err)
 	}
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("User-Agent", "insomnia/9.2.0")
 	req.Header.Add("Accept", "application/vnd.vimeo.*+json;version=3.4")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("VIMEO_API_ACCESS_TOKEN")))
 
@@ -54,21 +56,25 @@ func CreateVideo(filePath string) (*CreateVideoResponse, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("Error while sending request: %w", err)
+		return nil, fmt.Errorf("error while sending request: %w", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error: Status code: %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Error while reading response body: %w", err)
+		return nil, fmt.Errorf("error while reading response body: %w", err)
 	}
 
-	var createVideoResponse CreateVideoResponse
-	err = json.Unmarshal(bodyBytes, &createVideoResponse)
+	createVideoResponse := &CreateVideoResponse{}
+
+	err = json.Unmarshal(body, createVideoResponse)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing response body: %w", err)
+		return nil, fmt.Errorf("error while parsing response body: %w", err)
 	}
 
 	fmt.Println("The video was created successfully")
-	return &createVideoResponse, nil
+	return createVideoResponse, nil
 }

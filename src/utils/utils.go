@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -126,10 +127,10 @@ func createChunksGo(filePath string) error {
 	return nil
 }
 
-func GetFileSize(filePath string) int64 {
+func GetFileInfo(filePath string) fs.FileInfo {
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return fileInfo.Size()
+	return fileInfo
 }
