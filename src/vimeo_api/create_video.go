@@ -53,7 +53,10 @@ func CreateVideo(filePath string) (*CreateVideoResponse, error) {
 	fmt.Println("Doing the request for creating a new video using Vimeo API")
 
 	createVideoResponse := &CreateVideoResponse{}
-	utils.HandleHttpRequest(req, createVideoResponse)
+	_, err = utils.HandleHttpRequest(req, createVideoResponse)
+	if err != nil {
+		return nil, err
+	}
 
 	fmt.Println("The video was created successfully")
 	return createVideoResponse, nil

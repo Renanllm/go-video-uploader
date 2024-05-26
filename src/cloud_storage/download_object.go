@@ -17,6 +17,8 @@ func DownloadObject(ctx context.Context, bkt *storage.BucketHandle, objectName s
 		return "", err
 	}
 
+	fmt.Printf("Starting to download the %v file\n", objectName)
+
 	rc, err := bkt.Object(objectName).NewReader(ctx)
 	if err != nil {
 		return "", fmt.Errorf("Object(%q).NewReader: %w", objectName, err)

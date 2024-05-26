@@ -32,11 +32,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	utils.CreateChunks(filePath)
+	chunkNames, err := utils.CreateChunks(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	defer utils.DeleteTempDir()
 
-	_, err = vimeo_api.CreateVideo(filePath)
+	createVideoResponse, err := vimeo_api.CreateVideo(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = vimeo_api.UploadAllChunksVideo(createVideoResponse.Upload.UploadLink, chunkNames)
 	if err != nil {
 		log.Fatal(err)
 	}

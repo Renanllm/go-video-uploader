@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func HandleHttpRequest[T any](req *http.Request, responseBody *T) (*T, error) {
+func HandleHttpRequest[T any](req *http.Request, responseBody *T) (*http.Response, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -23,9 +23,13 @@ func HandleHttpRequest[T any](req *http.Request, responseBody *T) (*T, error) {
 		return nil, fmt.Errorf("error while reading response body: %w", err)
 	}
 
+	if len(body) == 0 {
+		return resp, nil
+	}
+
 	err = json.Unmarshal(body, responseBody)
 	if err != nil {
 		return nil, fmt.Errorf("error while parsing response body: %w", err)
 	}
-	return responseBody, nil
+	return resp, nil
 }

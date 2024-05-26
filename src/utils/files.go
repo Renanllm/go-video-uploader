@@ -30,11 +30,13 @@ func DeleteTempDir() {
 	}
 }
 
-func CreateChunks(filePath string) error {
-	chunkSize := 1024 * 51200 // 50MB
+func CreateChunks(filePath string) ([]string, error) {
+	chunkSize := 1024 * 131072 // 128MB
+	chunkNames := []string{}
+	dir := "./temp"
 	file, err := os.Open(filePath)
 	if err != nil {
-		return err
+		return chunkNames, err
 	}
 	defer file.Close()
 
@@ -47,26 +49,27 @@ func CreateChunks(filePath string) error {
 	for {
 		bytesRead, err := file.Read(buffer)
 		if err != nil && err != io.EOF {
-			return err
+			return chunkNames, err
 		}
 		if bytesRead == 0 {
 			break
 		}
 		chunkFileName := fmt.Sprintf("chunk_%d", index)
-		f, err := CreateFile("./temp", chunkFileName)
+		f, err := CreateFile(dir, chunkFileName)
+		chunkNames = append(chunkNames, fmt.Sprintf("%s/%s", dir, chunkFileName))
 		if err != nil {
-			return err
+			return chunkNames, err
 		}
 		_, err = f.Write(buffer[:bytesRead])
 		if err != nil {
-			return err
+			return chunkNames, err
 		}
 		f.Close()
 		index++
 	}
 
 	fmt.Println("All file chunks were created successfully")
-	return nil
+	return chunkNames, nil
 }
 
 // doing the same thing but using go routines
