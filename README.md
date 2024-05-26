@@ -1,5 +1,15 @@
 
-# 📹 Vimeo Video Chunk Uploader
+<h1 align="center" style="font-weight: bold;">📹 Vimeo Video Chunk Uploader</h1>
+
+![go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
+![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)
+
+<p align="center">
+ <a href="#config">Configuration</a> • 
+  <a href="#running">Running the Project</a> •
+ <a href="#notes">Notes</a> •
+ <a href="#support">Support</a>
+</p>
 
 ## Project Description
 
@@ -11,7 +21,7 @@ This project, developed in Go 1.22, aims to automate the process of uploading vi
 4. Upload each of the chunks.
 5. Verify the successful upload using the Vimeo API.
 
-## ⚙️ Configuration
+<h2 id="config">⚙️ Configuration</h2>
 
 ### Environment Variables
 
@@ -21,7 +31,7 @@ The project uses environment variables to configure necessary keys and credentia
 
 Depending on the permissions configured on your Google Cloud Storage bucket, you might need to place your service account JSON file in the `./config` directory.
 
-## 🚀 Running the Project
+<h2 id="running">🚀 Running the Project</h2>
 
 ### Prerequisites
 
@@ -64,11 +74,11 @@ After compiling, you can run the generated binary:
 <pre><div class="overflow-y-auto p-4 text-left undefined" dir="ltr"><code class="!whitespace-pre hljs language-bash">./vimeo-uploader
 </code></div></pre>
 
-## 📝 Notes
+<h2 id="notes">📝 Notes</h2>
 
 * Ensure all dependencies and credentials are correctly configured before running the project.
 * Check the permissions of your Google Cloud Storage bucket to ensure the application has access to the videos.
 
-## 📞 Support
+<h2 id="support">📞 Support</h2>
 
 For any questions or issues, please open an issue on [GitHub Issues](https://github.com/your-username/your-repository/issues).
