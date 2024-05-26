@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -53,27 +52,8 @@ func CreateVideo(filePath string) (*CreateVideoResponse, error) {
 
 	fmt.Println("Doing the request for creating a new video using Vimeo API")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error while sending request: %w", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error: Status code: %d", resp.StatusCode)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error while reading response body: %w", err)
-	}
-
 	createVideoResponse := &CreateVideoResponse{}
-
-	err = json.Unmarshal(body, createVideoResponse)
-	if err != nil {
-		return nil, fmt.Errorf("error while parsing response body: %w", err)
-	}
+	utils.HandleHttpRequest(req, createVideoResponse)
 
 	fmt.Println("The video was created successfully")
 	return createVideoResponse, nil
