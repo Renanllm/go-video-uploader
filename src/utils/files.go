@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 )
 
@@ -31,7 +32,7 @@ func DeleteTempDir() {
 }
 
 func CreateChunks(filePath string) ([]string, error) {
-	chunkSize := 1024 * 131072 // 128MB
+	chunkSize := 1024 * 51200 // 50MB
 	chunkNames := []string{}
 	dir := "./temp"
 	file, err := os.Open(filePath)
@@ -52,6 +53,7 @@ func CreateChunks(filePath string) ([]string, error) {
 			return chunkNames, err
 		}
 		if bytesRead == 0 {
+			runtime.GC()
 			break
 		}
 		chunkFileName := fmt.Sprintf("chunk_%d", index)
